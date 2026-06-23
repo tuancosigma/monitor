@@ -18,14 +18,19 @@ from app import __version__
 from app.alerting.escalation import start_escalation_worker, stop_escalation_worker
 from app.api import ai as ai_api
 from app.api import alerts as alerts_api
+from app.api import audit as audit_api
+from app.api import benchmark as benchmark_api
 from app.api import channels as channels_api
 from app.api import connectors as connectors_api
+from app.api import dashboard as dashboard_api
 from app.api import events as events_api
 from app.api import incidents as incidents_api
 from app.api import ingest_webhook as ingest_webhook_api
 from app.api import playbooks as playbooks_api
+from app.api import posture as posture_api
 from app.connectors.manager import manager as connector_manager
 from app.core import clickhouse
+from app.core.audit import AuditMiddleware
 from app.core.config import settings
 from app.core.health import gather_health
 from app.core.logging import configure_logging, get_logger
@@ -86,7 +91,14 @@ app.include_router(ai_api.router)
 app.include_router(connectors_api.router)
 app.include_router(ingest_webhook_api.router)
 app.include_router(playbooks_api.router)
+app.include_router(posture_api.router)
+app.include_router(benchmark_api.router)
+app.include_router(dashboard_api.router)
+app.include_router(audit_api.router)
 
+
+# Audit every mutating request centrally (appended to audit_log).
+app.add_middleware(AuditMiddleware)
 
 app.add_middleware(
     CORSMiddleware,

@@ -530,3 +530,85 @@ export function runPlaybook(id: number, confirmDangerous = false): Promise<Playb
     confirm_dangerous: confirmDangerous,
   });
 }
+
+// ============================================================================
+// Phase 7: Posture, Benchmark, Dashboard, Audit
+// ============================================================================
+
+export interface PostureRun {
+  id: number;
+  ts: string;
+  tool: string;
+  score: number;
+  drift: number;
+  findings: Record<string, unknown>[];
+  total_findings: number;
+}
+
+export interface BenchmarkRun {
+  id: number;
+  ts: string;
+  scenario: string;
+  metric_value: number;
+  metric_unit: string;
+  passed: boolean;
+}
+
+export interface DashboardWidget {
+  id: string;
+  type: string; // timeseries, top_n, heatmap, log_table
+  title: string;
+  query: string;
+}
+
+export interface DashboardLayout {
+  owner: string;
+  widgets: DashboardWidget[];
+}
+
+export interface AuditEntry {
+  id: number;
+  ts: string;
+  actor: string;
+  method: string;
+  path: string;
+  status_code: number;
+}
+
+export async function fetchPosture(): Promise<PostureRun[]> {
+  const res = await fetch(`${PUBLIC_BACKEND_URL}/api/posture`, { cache: "no-store" });
+  if (!res.ok) throw new Error(`GET /api/posture returned ${res.status}`);
+  return (await res.json()) as PostureRun[];
+}
+
+export function runPosture(tool: string): Promise<PostureRun> {
+  return postJson<PostureRun>(`/api/posture/run?tool=${encodeURIComponent(tool)}`);
+}
+
+export async function fetchBenchmarks(): Promise<BenchmarkRun[]> {
+  const res = await fetch(`${PUBLIC_BACKEND_URL}/api/benchmark`, { cache: "no-store" });
+  if (!res.ok) throw new Error(`GET /api/benchmark returned ${res.status}`);
+  return (await res.json()) as BenchmarkRun[];
+}
+
+export function runBenchmark(scenario: string): Promise<BenchmarkRun> {
+  return postJson<BenchmarkRun>(`/api/benchmark/run?scenario=${encodeURIComponent(scenario)}`);
+}
+
+export async function fetchDashboard(owner = "default"): Promise<DashboardLayout> {
+  const res = await fetch(`${PUBLIC_BACKEND_URL}/api/dashboard?owner=${owner}`, {
+    cache: "no-store",
+  });
+  if (!res.ok) throw new Error(`GET /api/dashboard returned ${res.status}`);
+  return (await res.json()) as DashboardLayout;
+}
+
+export async function saveDashboard(layout: DashboardLayout): Promise<DashboardLayout> {
+  const res = await fetch(`${PUBLIC_BACKEND_URL}/api/dashboard`, {
+    method: "PUT",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(layout),
+  });
+  if (!res.ok) throw new Error(`PUT /api/dashboard returned ${res.status}`);
+  return (await res.json()) as DashboardLayout;
+}

@@ -21,8 +21,8 @@ node_modules/
 /coverage
 
 # next.js
-/.next/
-/out/
+.next/
+out/
 dist/
 bin/
 
@@ -103,3 +103,6 @@ external/
 
 # Git worktrees (local development only)
 worktrees/
+
+# GitHub Actions workflows (due to local token limits)
+.github/workflows/

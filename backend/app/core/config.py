@@ -33,6 +33,10 @@ class Settings(BaseSettings):
     # SOAR: script action is RCE-risky — disabled unless explicitly enabled.
     soar_script_enabled: bool = False
 
+    # RBAC: when enabled, mutating endpoints require a sufficient role
+    # (sent via X-Sentinel-Role). Disabled in dev so the UI works without auth wiring.
+    rbac_enabled: bool = False
+
     # CORS — restrict browser access to the frontend origin only
     frontend_origin: str = "http://localhost:3000"
 
