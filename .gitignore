@@ -2,6 +2,13 @@
 
 # dependencies
 /node_modules
+node_modules/
+# python virtualenvs / build artifacts
+.venv/
+*.egg-info/
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
 /.pnp
 .pnp.*
 .yarn/*

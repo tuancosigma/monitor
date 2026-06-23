@@ -1,0 +1,17 @@
+id: 5a8a478b-302a-4db5-b82b-8a8b13c7dbba
+title: SSH Brute Force
+description: Detects multiple failed SSH authentication attempts from a single source IP.
+severity: high
+status: experimental
+tags:
+  - attack.t1110
+detection:
+  selection:
+    event_category: authentication
+    event_outcome: failure
+  condition: selection
+  timeframe: 1m
+  count:
+    field: source_ip
+    op: gte
+    value: 5
