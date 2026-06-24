@@ -1,7 +1,0 @@
-# Force LF for shell/docker/yaml so containers built from a Windows checkout work.
-*.sh   text eol=lf
-*.yaml text eol=lf
-*.yml  text eol=lf
-Dockerfile text eol=lf
-Makefile   text eol=lf
-*.py   text eol=lf
