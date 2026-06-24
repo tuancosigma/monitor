@@ -69,6 +69,7 @@ services:
 
   backend:
     build: ./backend
+    env_file: .env
     environment:
       SENTINEL_CLICKHOUSE_HOST: clickhouse
       SENTINEL_CLICKHOUSE_USER: ${SENTINEL_CLICKHOUSE_USER:-sentinel}
@@ -78,6 +79,9 @@ services:
       SENTINEL_FRONTEND_ORIGIN: http://localhost:3000
     ports:
       - "8000:8000"
+    volumes:
+      - ./backend/rules:/app/rules
+      - ./backend/config:/app/config
     depends_on:
       clickhouse:
         condition: service_healthy

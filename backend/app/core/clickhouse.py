@@ -20,6 +20,7 @@ log = get_logger("sentinel.clickhouse")
 
 _client: Client | None = None
 _lock = asyncio.Lock()
+_query_lock = asyncio.Lock()
 
 MIGRATIONS_DIR = Path(__file__).resolve().parents[2] / "migrations"
 
@@ -46,24 +47,27 @@ async def get_client() -> Client:
 
 async def execute(query: str, parameters: dict[str, Any] | None = None) -> Any:
     client = await get_client()
-    return await asyncio.to_thread(client.query, query, parameters or {})
+    async with _query_lock:
+        return await asyncio.to_thread(client.query, query, parameters or {})
 
 
 async def insert_rows(table: str, rows: list[list[Any]], column_names: list[str]) -> None:
     client = await get_client()
-    await asyncio.to_thread(client.insert, table, rows, column_names=column_names)
+    async with _query_lock:
+        await asyncio.to_thread(client.insert, table, rows, column_names=column_names)
 
 
 async def run_migrations() -> None:
     """Apply every ``*.sql`` file in migrations/ in lexical order (idempotent DDL)."""
     client = await get_client()
-    for path in sorted(MIGRATIONS_DIR.glob("*.sql")):
-        sql = path.read_text(encoding="utf-8")
-        if "-- target: sqlite" in sql:
-            log.info("migration_skipped_sqlite", file=path.name)
-            continue
-        for statement in (s.strip() for s in sql.split(";")):
-            if statement:
-                await asyncio.to_thread(client.command, statement)
-        log.info("migration_applied", file=path.name)
+    async with _query_lock:
+        for path in sorted(MIGRATIONS_DIR.glob("*.sql")):
+            sql = path.read_text(encoding="utf-8")
+            if "-- target: sqlite" in sql:
+                log.info("migration_skipped_sqlite", file=path.name)
+                continue
+            for statement in (s.strip() for s in sql.split(";")):
+                if statement:
+                    await asyncio.to_thread(client.command, statement)
+            log.info("migration_applied", file=path.name)
 

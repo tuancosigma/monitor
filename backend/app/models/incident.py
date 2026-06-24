@@ -74,3 +74,8 @@ class IncidentDetailResponse(IncidentResponse):
     alerts: list[AlertResponse] = Field(default_factory=list)
 
     model_config = {"from_attributes": True}
+
+
+from app.models.alert import AlertResponse
+
+IncidentDetailResponse.model_rebuild()
