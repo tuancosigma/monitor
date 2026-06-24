@@ -33,6 +33,14 @@ class EventCategory(StrEnum):
     web = "web"
     host = "host"
     configuration = "configuration"
+    # Extended categories for rich detection coverage
+    lateral_movement = "lateral_movement"
+    credential_access = "credential_access"
+    privilege_escalation = "privilege_escalation"
+    iam = "iam"
+    dns = "dns"
+    ransomware = "ransomware"
+    exfiltration = "exfiltration"
 
 
 class EventType(StrEnum):

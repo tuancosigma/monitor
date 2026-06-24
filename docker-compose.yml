@@ -82,6 +82,7 @@ services:
     volumes:
       - ./backend/rules:/app/rules
       - ./backend/config:/app/config
+      - ./backend/metadata.db:/app/metadata.db
     depends_on:
       clickhouse:
         condition: service_healthy

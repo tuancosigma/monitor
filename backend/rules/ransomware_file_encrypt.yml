@@ -1,0 +1,22 @@
+id: c9d0e1f2-rans-4cde-c901-ransomwr009
+title: Ransomware File Encryption Activity
+description: Detects potential ransomware activity via mass file renaming with encrypted extensions (.encrypted, .locked, .WNCRY, .crypt, etc).
+severity: critical
+status: experimental
+tags:
+  - attack.t1486
+  - attack.impact
+detection:
+  selection:
+    event_category: file
+    event_action: file_rename
+  condition: selection
+  timeframe: 5m
+  count:
+    field: host_name
+    op: gte
+    value: 1
+mitre:
+  - tactic: Impact
+    technique_id: T1486
+    technique_name: Data Encrypted for Impact

@@ -1,0 +1,22 @@
+id: c3d4e5f6-c2bc-4cde-c345-c2beacon003
+title: C2 Beaconing Detected
+description: Detects Command and Control beaconing activity — periodic small outbound connections to known malicious IPs.
+severity: critical
+status: experimental
+tags:
+  - attack.t1071
+  - attack.command_and_control
+detection:
+  selection:
+    event_category: network
+    event_action: c2_beacon
+  condition: selection
+  timeframe: 15m
+  count:
+    field: source_ip
+    op: gte
+    value: 1
+mitre:
+  - tactic: Command and Control
+    technique_id: T1071
+    technique_name: Application Layer Protocol

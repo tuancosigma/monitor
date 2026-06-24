@@ -1,0 +1,21 @@
+id: d4e5f6a7-lat1-4def-d456-lateral004mv
+title: Lateral Movement via Remote Protocol
+description: Detects lateral movement between hosts using RDP, SMB, WMI, PsExec, WinRM or SSH within the internal network.
+severity: high
+status: experimental
+tags:
+  - attack.t1021
+  - attack.lateral_movement
+detection:
+  selection:
+    event_category: lateral_movement
+  condition: selection
+  timeframe: 10m
+  count:
+    field: source_ip
+    op: gte
+    value: 2
+mitre:
+  - tactic: Lateral Movement
+    technique_id: T1021
+    technique_name: Remote Services

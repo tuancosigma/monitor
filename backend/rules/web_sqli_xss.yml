@@ -1,0 +1,22 @@
+id: a1b2c3d4-web1-4abc-a123-web001waf001
+title: Web Application SQL Injection Attempt
+description: Detects SQL injection attack patterns blocked by WAF across web servers.
+severity: high
+status: experimental
+tags:
+  - attack.t1190
+  - attack.initial_access
+detection:
+  selection:
+    event_category: web
+    event_outcome: failure
+  condition: selection
+  timeframe: 5m
+  count:
+    field: source_ip
+    op: gte
+    value: 3
+mitre:
+  - tactic: Initial Access
+    technique_id: T1190
+    technique_name: Exploit Public-Facing Application

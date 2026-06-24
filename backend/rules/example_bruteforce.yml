@@ -10,7 +10,7 @@ detection:
     event_category: authentication
     event_outcome: failure
   condition: selection
-  timeframe: 1m
+  timeframe: 5m
   count:
     field: source_ip
     op: gte
