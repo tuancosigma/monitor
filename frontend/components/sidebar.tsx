@@ -111,15 +111,15 @@ export function Sidebar() {
       <div className="flex flex-col overflow-y-auto flex-1">
         {/* Brand Header */}
         <div className="p-6 flex items-center gap-3 border-b border-slate-800/80">
-          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-sky-500/10 text-sky-400 border border-sky-500/20 shadow-[0_0_15px_rgba(56,189,248,0.15)]">
-            <svg className="w-6 h-6 animate-pulse" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+          <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-accent/10 text-accent-soft border border-accent/20 shadow-glow">
+            <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
               <path strokeLinecap="round" strokeLinejoin="round" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
             </svg>
           </div>
           <div>
-            <span className="text-lg font-bold tracking-wider text-slate-100 uppercase">Sentinel</span>
-            <span className="block text-xs text-slate-500 font-medium">Unified Platform</span>
+            <span className="h-display block text-lg font-semibold tracking-wide text-slate-100">Sentinel</span>
+            <span className="block font-mono text-2xs uppercase tracking-[0.22em] text-slate-500">Unified Platform</span>
           </div>
         </div>
 
@@ -133,20 +133,20 @@ export function Sidebar() {
                 href={item.href}
                 className={`flex items-center gap-3.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-all duration-200 group ${
                   isActive
-                    ? "bg-sky-500/10 text-sky-400 border border-sky-500/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
+                    ? "bg-accent/10 text-accent-soft border border-accent/20 shadow-[inset_0_1px_0_rgba(255,255,255,0.05)]"
                     : "text-slate-400 hover:text-slate-100 hover:bg-slate-800/40 border border-transparent"
                 }`}
               >
                 <span
                   className={`transition-colors duration-200 ${
-                    isActive ? "text-sky-400" : "text-slate-500 group-hover:text-slate-300"
+                    isActive ? "text-accent-soft" : "text-slate-500 group-hover:text-slate-300"
                   }`}
                 >
                   {item.icon}
                 </span>
                 <span className="flex-1">{item.name}</span>
                 {isActive && (
-                  <span className="h-1.5 w-1.5 rounded-full bg-sky-400 shadow-[0_0_8px_#38bdf8]" />
+                  <span className="h-1.5 w-1.5 rounded-full bg-accent shadow-[0_0_8px_rgba(245,158,11,0.7)]" />
                 )}
               </Link>
             );

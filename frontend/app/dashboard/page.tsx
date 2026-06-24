@@ -6,14 +6,36 @@ import {
   saveDashboard,
   type DashboardWidget,
 } from "@/lib/api";
+import { WidgetCard } from "@/components/charts/widget-card";
+import { PageHeader } from "@/components/ui/page-header";
 
 const WIDGET_TYPES = ["timeseries", "top_n", "heatmap", "log_table"];
+
+// Common ECS-lite fields a top_n / heatmap widget groups on.
+const FIELD_OPTIONS = [
+  "event_category",
+  "event_action",
+  "host_name",
+  "source_ip",
+  "user_name",
+  "event_outcome",
+  "network_protocol",
+  "log_level",
+];
+
+const WINDOWS: { label: string; minutes: number }[] = [
+  { label: "Last 1h", minutes: 60 },
+  { label: "Last 6h", minutes: 360 },
+  { label: "Last 24h", minutes: 1440 },
+  { label: "Last 7d", minutes: 10080 },
+];
 
 export default function DashboardPage() {
   const [widgets, setWidgets] = useState<DashboardWidget[]>([]);
   const [title, setTitle] = useState("");
   const [type, setType] = useState("timeseries");
   const [query, setQuery] = useState("event_category");
+  const [minutes, setMinutes] = useState(1440);
   const [status, setStatus] = useState<string | null>(null);
 
   const load = useCallback(async () => {
@@ -53,23 +75,34 @@ export default function DashboardPage() {
   };
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 p-8">
-      <header className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Dashboard</h1>
-          <p className="text-slate-400">Configurable widget grid (saved as layout JSON)</p>
-        </div>
-        <button
-          onClick={() => void save()}
-          className="rounded bg-emerald-600 px-4 py-2 text-sm font-medium"
-        >
-          Save layout
-        </button>
-      </header>
+    <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-6 p-8">
+      <PageHeader
+        title="Dashboard"
+        description="Configurable widget grid over live event data"
+        actions={
+          <>
+            <select
+              value={minutes}
+              onChange={(e) => setMinutes(Number(e.target.value))}
+              className="filter-input"
+              aria-label="time window"
+            >
+              {WINDOWS.map((w) => (
+                <option key={w.minutes} value={w.minutes}>
+                  {w.label}
+                </option>
+              ))}
+            </select>
+            <button onClick={() => void save()} className="btn-primary">
+              Save layout
+            </button>
+          </>
+        }
+      />
 
       {status && <p className="text-sm text-sky-400">{status}</p>}
 
-      <section className="flex flex-wrap items-end gap-2 rounded-lg border border-slate-800 bg-slate-900 p-4">
+      <section className="card flex flex-wrap items-end gap-2 p-4">
         <input
           value={title}
           onChange={(e) => setTitle(e.target.value)}
@@ -83,36 +116,21 @@ export default function DashboardPage() {
             </option>
           ))}
         </select>
-        <input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="query / field"
-          className="filter-input"
-        />
-        <button onClick={addWidget} className="rounded bg-sky-600 px-4 py-2 text-sm font-medium">
+        <select value={query} onChange={(e) => setQuery(e.target.value)} className="filter-input">
+          {FIELD_OPTIONS.map((f) => (
+            <option key={f} value={f}>
+              {f}
+            </option>
+          ))}
+        </select>
+        <button onClick={addWidget} className="btn-ghost">
           Add widget
         </button>
       </section>
 
       <section className="grid grid-cols-1 gap-4 md:grid-cols-2">
         {widgets.map((w) => (
-          <div key={w.id} className="rounded-lg border border-slate-800 bg-slate-900 p-4">
-            <div className="flex items-center justify-between">
-              <h3 className="font-semibold">{w.title}</h3>
-              <button
-                onClick={() => removeWidget(w.id)}
-                className="text-xs text-red-400 hover:text-red-300"
-              >
-                remove
-              </button>
-            </div>
-            <p className="mt-1 text-xs text-slate-500">
-              {w.type} · <span className="font-mono">{w.query}</span>
-            </p>
-            <div className="mt-3 flex h-24 items-center justify-center rounded bg-slate-950 text-slate-600">
-              {w.type} preview
-            </div>
-          </div>
+          <WidgetCard key={w.id} widget={w} minutes={minutes} onRemove={removeWidget} />
         ))}
         {widgets.length === 0 && (
           <p className="text-slate-500">No widgets. Add one above, then Save layout.</p>

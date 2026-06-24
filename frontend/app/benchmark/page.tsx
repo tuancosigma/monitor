@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { fetchBenchmarks, runBenchmark, type BenchmarkRun } from "@/lib/api";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default function BenchmarkPage() {
   const [runs, setRuns] = useState<BenchmarkRun[]>([]);
@@ -35,30 +36,20 @@ export default function BenchmarkPage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-6 p-8">
-      <header className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Benchmarks</h1>
-          <p className="text-slate-400">
-            k6 ingest throughput (≥10k/s) &amp; query latency (p95 &lt;2s)
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={() => void run("ingest_throughput")}
-            disabled={busy}
-            className="rounded bg-sky-600 px-3 py-1.5 text-sm font-medium disabled:opacity-50"
-          >
-            Run ingest
-          </button>
-          <button
-            onClick={() => void run("query_latency")}
-            disabled={busy}
-            className="rounded bg-slate-700 px-3 py-1.5 text-sm font-medium disabled:opacity-50"
-          >
-            Run query
-          </button>
-        </div>
-      </header>
+      <PageHeader
+        title="Benchmarks"
+        description="k6 ingest throughput (≥10k/s) & query latency (p95 <2s)"
+        actions={
+          <>
+            <button onClick={() => void run("ingest_throughput")} disabled={busy} className="btn-primary">
+              Run ingest
+            </button>
+            <button onClick={() => void run("query_latency")} disabled={busy} className="btn-ghost">
+              Run query
+            </button>
+          </>
+        }
+      />
 
       {error && <p className="text-sm text-amber-400">{error}</p>}
 

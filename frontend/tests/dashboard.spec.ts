@@ -18,4 +18,15 @@ test("dashboard page allows adding and saving widgets", async ({ page }) => {
   await expect(page.getByRole("heading", { name: "Dashboard" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Add widget" })).toBeVisible();
   await expect(page.getByRole("button", { name: "Save layout" })).toBeVisible();
+  // Time-window selector drives the live widget queries.
+  await expect(page.getByLabel("time window")).toBeVisible();
+});
+
+test("adding a widget renders a widget card", async ({ page }) => {
+  await page.goto("/dashboard");
+  await page.getByPlaceholder("Widget title").fill("Events over time");
+  await page.getByRole("button", { name: "Add widget" }).click();
+  // Card header shows the title and a remove control (chart loads against live data).
+  await expect(page.getByRole("heading", { name: "Events over time" })).toBeVisible();
+  await expect(page.getByRole("button", { name: "remove" })).toBeVisible();
 });

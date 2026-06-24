@@ -10,6 +10,7 @@ import {
   type PlaybookRun,
 } from "@/lib/api";
 import { DagBuilder } from "@/components/dag-builder";
+import { PageHeader } from "@/components/ui/page-header";
 
 const RUN_COLOR: Record<string, string> = {
   success: "text-emerald-400",
@@ -48,10 +49,10 @@ export default function PlaybooksPage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 p-8">
-      <header>
-        <h1 className="text-2xl font-bold">Playbooks</h1>
-        <p className="text-slate-400">Automate response: trigger → action DAGs (SOAR)</p>
-      </header>
+      <PageHeader
+        title="Playbooks"
+        description="Automate response: trigger → action DAGs (SOAR)"
+      />
 
       {error && <p className="text-sm text-red-400">{error}</p>}
 

@@ -612,3 +612,37 @@ export async function saveDashboard(layout: DashboardLayout): Promise<DashboardL
   if (!res.ok) throw new Error(`PUT /api/dashboard returned ${res.status}`);
   return (await res.json()) as DashboardLayout;
 }
+
+// Live widget data: one aggregation per widget, rendered as a chart.
+export interface WidgetSeriesPoint {
+  label: string;
+  value: number;
+}
+
+export interface WidgetData {
+  type: string;
+  field: string;
+  series?: WidgetSeriesPoint[];
+  events?: EcsEvent[];
+}
+
+export async function fetchWidgetData(
+  type: string,
+  field: string,
+  minutes: number,
+): Promise<WidgetData> {
+  const params = new URLSearchParams({
+    type,
+    field,
+    minutes: String(minutes),
+  });
+  const res = await fetch(
+    `${PUBLIC_BACKEND_URL}/api/dashboard/widget-data?${params.toString()}`,
+    { cache: "no-store" },
+  );
+  if (!res.ok) {
+    const detail = await res.json().catch(() => ({ detail: `status ${res.status}` }));
+    throw new Error(detail.detail || `GET /api/dashboard/widget-data failed (${res.status})`);
+  }
+  return (await res.json()) as WidgetData;
+}

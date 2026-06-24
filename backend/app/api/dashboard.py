@@ -2,11 +2,14 @@
 
 from __future__ import annotations
 
-from fastapi import APIRouter, Depends
+from typing import Annotated, Any
+
+from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.metadata_db import get_db
+from app.dashboard.widget_query import query_widget
 from app.models.dashboard_layout import (
     DashboardLayout,
     DashboardLayoutPayload,
@@ -14,6 +17,19 @@ from app.models.dashboard_layout import (
 )
 
 router = APIRouter(prefix="/api/dashboard", tags=["dashboard"])
+
+
+@router.get("/widget-data")
+async def get_widget_data(
+    type: Annotated[str, Query()],
+    field: Annotated[str, Query()] = "event_category",
+    minutes: Annotated[int, Query(ge=5, le=10080)] = 1440,
+) -> dict[str, Any]:
+    """Aggregate live event data for a single dashboard widget."""
+    try:
+        return await query_widget(type, field, minutes)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
 
 
 @router.get("", response_model=DashboardLayoutResponse)

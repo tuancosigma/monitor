@@ -1,4 +1,5 @@
 import { fetchHealth, type HealthResponse } from "@/lib/api";
+import { OverviewKpis } from "@/components/overview-kpis";
 
 // Server component: fetches backend health on each request (Phase 0 smoke).
 export const dynamic = "force-dynamic";
@@ -16,13 +17,15 @@ export default async function HomePage() {
   const ok = "status" in health && health.status === "ok";
 
   return (
-    <main className="mx-auto flex min-h-screen max-w-2xl flex-col gap-6 p-10">
+    <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-6 p-10">
       <header>
         <h1 className="text-3xl font-bold">Sentinel</h1>
-        <p className="text-slate-400">Unified monitoring platform</p>
+        <p className="text-slate-400">Unified monitoring platform — operations overview</p>
       </header>
 
-      <section className="rounded-lg border border-slate-800 bg-slate-900 p-6">
+      <OverviewKpis />
+
+      <section className="max-w-2xl rounded-lg border border-slate-800 bg-slate-900 p-6">
         <div className="flex items-center gap-3">
           <span
             data-testid="health-badge"

@@ -8,12 +8,14 @@ import {
   type Connector,
 } from "@/lib/api";
 import { ConnectorForm } from "@/components/connector-form";
+import { PageHeader } from "@/components/ui/page-header";
+import { Badge } from "@/components/ui/badge";
 
-const STATUS_COLOR: Record<string, string> = {
-  idle: "text-slate-400",
-  running: "text-emerald-400",
-  error: "text-red-400",
-};
+function connectorTone(status: string): "ok" | "danger" | "neutral" {
+  if (status === "running") return "ok";
+  if (status === "error") return "danger";
+  return "neutral";
+}
 
 export default function ConnectorsPage() {
   const [connectors, setConnectors] = useState<Connector[]>([]);
@@ -43,10 +45,10 @@ export default function ConnectorsPage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-5xl flex-col gap-6 p-8">
-      <header>
-        <h1 className="text-2xl font-bold">Connectors</h1>
-        <p className="text-slate-400">Pull from Wazuh / Prometheus, or receive webhooks</p>
-      </header>
+      <PageHeader
+        title="Connectors"
+        description="Pull from Wazuh / Prometheus, or receive webhooks"
+      />
 
       {error && <p className="text-sm text-red-400">{error}</p>}
 
@@ -68,8 +70,8 @@ export default function ConnectorsPage() {
               <tr key={c.id} className="border-t border-slate-800">
                 <td className="px-3 py-2 font-medium">{c.name}</td>
                 <td className="px-3 py-2">{c.type}</td>
-                <td className={`px-3 py-2 ${STATUS_COLOR[c.status] ?? ""}`}>
-                  {c.status}
+                <td className="px-3 py-2">
+                  <Badge tone={connectorTone(c.status)}>{c.status}</Badge>
                   {c.last_error && (
                     <span className="ml-2 text-xs text-red-400">({c.last_error})</span>
                   )}

@@ -11,36 +11,7 @@ import {
   type IncidentFilters,
 } from "@/lib/api";
 import { IncidentTimeline } from "@/components/incident-timeline";
-
-function severityBadge(severity: string) {
-  switch (severity.toLowerCase()) {
-    case "critical":
-      return "bg-red-500/10 text-red-400 border-red-500/20";
-    case "high":
-      return "bg-orange-500/10 text-orange-400 border-orange-500/20";
-    case "medium":
-      return "bg-yellow-500/10 text-yellow-400 border-yellow-500/20";
-    case "low":
-      return "bg-blue-500/10 text-blue-400 border-blue-500/20";
-    default:
-      return "bg-slate-500/10 text-slate-400 border-slate-500/20";
-  }
-}
-
-function statusBadge(status: string) {
-  switch (status.toLowerCase()) {
-    case "open":
-      return "bg-red-500/20 text-red-400 border-red-500/30";
-    case "investigating":
-      return "bg-yellow-500/20 text-yellow-400 border-yellow-500/30";
-    case "resolved":
-      return "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
-    case "closed":
-      return "bg-slate-500/20 text-slate-400 border-slate-500/30";
-    default:
-      return "bg-slate-500/20 text-slate-400 border-slate-500/30";
-  }
-}
+import { Badge, severityTone, statusTone } from "@/components/ui/badge";
 
 export default function IncidentsPage() {
   const [incidents, setIncidents] = useState<IncidentResponse[]>([]);
@@ -160,7 +131,7 @@ export default function IncidentsPage() {
           <span>/</span>
           <span className="text-slate-200">Incidents</span>
         </div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-white mt-1">Incidents Board</h1>
+        <h1 className="h-display text-3xl font-semibold tracking-tight text-white mt-1">Incidents Board</h1>
         <p className="text-slate-400">Investigate correlated security incidents and manage timeline actions.</p>
       </header>
 
@@ -169,7 +140,7 @@ export default function IncidentsPage() {
         <Link href="/alerts" className="text-sm font-semibold text-slate-400 hover:text-slate-200 pb-3 px-1">
           Alerts List
         </Link>
-        <Link href="/incidents" className="text-sm font-semibold border-b-2 border-sky-500 pb-3 text-sky-400 px-1">
+        <Link href="/incidents" className="text-sm font-semibold border-b-2 border-accent pb-3 text-accent-soft px-1">
           Incidents Board
         </Link>
         <Link href="/explore" className="text-sm font-semibold text-slate-400 hover:text-slate-200 pb-3 px-1">
@@ -186,7 +157,7 @@ export default function IncidentsPage() {
         <section className="lg:col-span-4 flex flex-col gap-4">
           <div className="flex items-center justify-between bg-slate-900/40 p-3 rounded-lg border border-slate-800">
             <select
-              className="rounded border border-slate-700 bg-slate-950 px-2 py-1 text-xs focus:border-sky-500 focus:outline-none"
+              className="rounded border border-slate-700 bg-slate-950 px-2 py-1 text-xs focus:border-accent focus:outline-none"
               onChange={(e) => updateFilter("status", e.target.value)}
             >
               <option value="ALL">All Statuses</option>
@@ -206,7 +177,7 @@ export default function IncidentsPage() {
 
           {listLoading ? (
             <div className="flex justify-center items-center py-20">
-              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-sky-500" />
+              <div className="animate-spin rounded-full h-6 w-6 border-b-2 border-accent" />
             </div>
           ) : incidents.length === 0 ? (
             <div className="text-center py-10 border border-dashed border-slate-800 rounded-lg">
@@ -228,15 +199,15 @@ export default function IncidentsPage() {
                     }}
                     className={`text-left p-4 rounded-xl border transition ${
                       isSelected
-                        ? "bg-slate-900 border-sky-500/80 shadow-md ring-1 ring-sky-500/30"
+                        ? "bg-slate-900 border-accent/70 shadow-md ring-1 ring-accent/25"
                         : "bg-slate-900/30 border-slate-800 hover:border-slate-700"
                     }`}
                   >
                     <div className="flex justify-between items-start gap-2">
                       <span className="text-xs font-mono text-slate-500 font-bold">INC-{inc.id}</span>
-                      <span className={`inline-block rounded border px-1.5 py-0.2 text-3xs font-semibold ${severityBadge(inc.severity)}`}>
+                      <Badge tone={severityTone(inc.severity)}>
                         {inc.severity.toUpperCase()}
-                      </span>
+                      </Badge>
                     </div>
 
                     <h3 className="text-sm font-semibold text-slate-100 mt-1 line-clamp-1">{inc.title}</h3>
@@ -244,9 +215,9 @@ export default function IncidentsPage() {
 
                     <div className="mt-3 flex justify-between items-center text-3xs text-slate-500 border-t border-slate-800/40 pt-2">
                       <span>Seen: {dateStr}</span>
-                      <span className={`rounded-full px-2 py-0.1 border ${statusBadge(inc.status)}`}>
+                      <Badge tone={statusTone(inc.status)} size="xs" pill>
                         {inc.status}
-                      </span>
+                      </Badge>
                     </div>
                   </button>
                 );
@@ -259,7 +230,7 @@ export default function IncidentsPage() {
         <section className="lg:col-span-8 bg-slate-900/20 border border-slate-800 rounded-2xl p-6 min-h-[500px]">
           {detailLoading ? (
             <div className="flex justify-center items-center py-40">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-500" />
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent" />
             </div>
           ) : !detail ? (
             <div className="flex flex-col items-center justify-center py-40 text-center text-slate-500">
@@ -286,7 +257,7 @@ export default function IncidentsPage() {
                       <select
                         value={detail.status}
                         onChange={(e) => handleStatusUpdate(detail.id, e.target.value)}
-                        className="rounded border border-slate-700 bg-slate-950 px-2.5 py-1 text-xs focus:border-sky-500 focus:outline-none"
+                        className="rounded border border-slate-700 bg-slate-950 px-2.5 py-1 text-xs focus:border-accent focus:outline-none"
                       >
                         <option value="open">Open</option>
                         <option value="investigating">Investigating</option>
@@ -301,7 +272,7 @@ export default function IncidentsPage() {
                       <select
                         value={detail.assignee ?? "UNASSIGNED"}
                         onChange={(e) => handleAssignUpdate(detail.id, e.target.value === "UNASSIGNED" ? null : e.target.value)}
-                        className="rounded border border-slate-700 bg-slate-950 px-2.5 py-1 text-xs focus:border-sky-500 focus:outline-none"
+                        className="rounded border border-slate-700 bg-slate-950 px-2.5 py-1 text-xs focus:border-accent focus:outline-none"
                       >
                         <option value="UNASSIGNED">Unassigned</option>
                         <option value="Alice">Alice</option>
@@ -321,9 +292,9 @@ export default function IncidentsPage() {
                 <div className="flex flex-col gap-1 text-xs">
                   <span className="text-slate-500 font-semibold uppercase tracking-wider text-3xs">Severity Rating</span>
                   <div className="flex items-center gap-1.5 mt-0.5">
-                    <span className={`inline-block rounded border px-2 py-0.5 font-semibold text-2xs ${severityBadge(detail.severity)}`}>
+                    <Badge tone={severityTone(detail.severity)}>
                       {detail.severity.toUpperCase()}
-                    </span>
+                    </Badge>
                   </div>
                 </div>
 

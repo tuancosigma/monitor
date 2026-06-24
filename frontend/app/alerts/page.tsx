@@ -4,34 +4,8 @@ import { Fragment, useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import { fetchAlerts, updateAlert, type AlertResponse, type AlertFilters } from "@/lib/api";
 import { AiTriagePanel } from "@/components/ai-triage-panel";
-
-function severityBadge(severity: string) {
-  switch (severity.toLowerCase()) {
-    case "critical":
-      return "bg-red-500/10 text-red-400 border-red-500/20";
-    case "high":
-      return "bg-orange-500/10 text-orange-400 border-orange-500/20";
-    case "medium":
-      return "bg-yellow-500/10 text-yellow-400 border-yellow-500/20";
-    case "low":
-      return "bg-blue-500/10 text-blue-400 border-blue-500/20";
-    default:
-      return "bg-slate-500/10 text-slate-400 border-slate-500/20";
-  }
-}
-
-function statusBadge(status: string) {
-  switch (status.toLowerCase()) {
-    case "open":
-      return "bg-red-500/20 text-red-400 border-red-500/30";
-    case "acknowledged":
-      return "bg-sky-500/20 text-sky-400 border-sky-500/30";
-    case "resolved":
-      return "bg-emerald-500/20 text-emerald-400 border-emerald-500/30";
-    default:
-      return "bg-slate-500/20 text-slate-400 border-slate-500/30";
-  }
-}
+import { AlertSummaryBar } from "@/components/alert-summary-bar";
+import { Badge, severityTone, statusTone } from "@/components/ui/badge";
 
 export default function AlertsPage() {
   const [alerts, setAlerts] = useState<AlertResponse[]>([]);
@@ -91,13 +65,13 @@ export default function AlertsPage() {
           <span>/</span>
           <span className="text-slate-200">Alerts</span>
         </div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-white mt-1">SIEM Alerts</h1>
+        <h1 className="h-display text-3xl font-semibold tracking-tight text-white mt-1">SIEM Alerts</h1>
         <p className="text-slate-400">Manage, inspect, and transition security detection alerts.</p>
       </header>
 
       {/* Navigation Tabs */}
       <div className="flex gap-4 border-b border-slate-800 pb-3">
-        <Link href="/alerts" className="text-sm font-semibold border-b-2 border-sky-500 pb-3 text-sky-400 px-1">
+        <Link href="/alerts" className="text-sm font-semibold border-b-2 border-accent pb-3 text-accent-soft px-1">
           Alerts List
         </Link>
         <Link href="/incidents" className="text-sm font-semibold text-slate-400 hover:text-slate-200 pb-3 px-1">
@@ -116,7 +90,7 @@ export default function AlertsPage() {
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Status</label>
           <select
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none"
+            className="rounded border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none"
             onChange={(e) => updateFilter("status", e.target.value)}
           >
             <option value="ALL">All Statuses</option>
@@ -130,7 +104,7 @@ export default function AlertsPage() {
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-semibold text-slate-400 uppercase tracking-wider">Severity</label>
           <select
-            className="rounded border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none"
+            className="rounded border border-slate-700 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none"
             onChange={(e) => updateFilter("severity", e.target.value)}
           >
             <option value="ALL">All Severities</option>
@@ -144,16 +118,19 @@ export default function AlertsPage() {
 
         <button
           onClick={loadAlerts}
-          className="ml-auto mt-auto self-end rounded bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-500 active:bg-sky-700 transition"
+          className="ml-auto mt-auto self-end btn-primary"
         >
           Refresh
         </button>
       </section>
 
+      {/* At-a-glance summary derived from loaded alerts */}
+      {!loading && !error && <AlertSummaryBar alerts={alerts} />}
+
       {/* Content Table / Loading / Error */}
       {loading ? (
         <div className="flex justify-center items-center py-20">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-500" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent" />
         </div>
       ) : error ? (
         <div className="rounded-xl border border-red-500/20 bg-red-500/10 p-4 text-sm text-red-400">
@@ -189,9 +166,9 @@ export default function AlertsPage() {
                   <td className="px-4 py-4">
                     <div className="font-semibold text-slate-200">{alert.rule_name}</div>
                     <div className="mt-1 flex items-center gap-1.5">
-                      <span className={`inline-block rounded border px-1.5 py-0.5 text-2xs font-semibold ${severityBadge(alert.severity)}`}>
+                      <Badge tone={severityTone(alert.severity)}>
                         {alert.severity.toUpperCase()}
-                      </span>
+                      </Badge>
                       <span className="text-slate-500 text-2xs font-mono">ID: {alert.rule_id.split("-")[0]}</span>
                     </div>
                   </td>
@@ -237,13 +214,13 @@ export default function AlertsPage() {
 
                   {/* Status & Assignee */}
                   <td className="px-4 py-4">
-                    <span className={`inline-block rounded-full border px-2 py-0.5 text-xs font-semibold ${statusBadge(alert.status)}`}>
+                    <Badge tone={statusTone(alert.status)} size="xs" pill>
                       {alert.status}
-                    </span>
+                    </Badge>
                     <div className="mt-1.5 flex items-center gap-1.5">
                       <span className="text-slate-400 text-xs">Assignee:</span>
                       <select
-                        className="rounded border border-slate-800 bg-slate-950 px-1.5 py-0.5 text-xs focus:border-sky-500 focus:outline-none"
+                        className="rounded border border-slate-800 bg-slate-950 px-1.5 py-0.5 text-xs focus:border-accent focus:outline-none"
                         value={alert.assignee ?? "UNASSIGNED"}
                         onChange={(e) => handleAssign(alert.id, e.target.value === "UNASSIGNED" ? null : e.target.value)}
                       >

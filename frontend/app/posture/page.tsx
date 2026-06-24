@@ -2,6 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { fetchPosture, runPosture, type PostureRun } from "@/lib/api";
+import { PageHeader } from "@/components/ui/page-header";
 
 function scoreColor(score: number): string {
   if (score >= 80) return "text-emerald-400";
@@ -43,33 +44,25 @@ export default function PosturePage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-4xl flex-col gap-6 p-8">
-      <header className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Security Posture</h1>
-          <p className="text-slate-400">CIS-style score from Trivy / Lynis, with drift</p>
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={() => void scan("trivy")}
-            disabled={busy}
-            className="rounded bg-sky-600 px-3 py-1.5 text-sm font-medium disabled:opacity-50"
-          >
-            Run Trivy
-          </button>
-          <button
-            onClick={() => void scan("lynis")}
-            disabled={busy}
-            className="rounded bg-slate-700 px-3 py-1.5 text-sm font-medium disabled:opacity-50"
-          >
-            Run Lynis
-          </button>
-        </div>
-      </header>
+      <PageHeader
+        title="Security Posture"
+        description="CIS-style score from Trivy / Lynis, with drift"
+        actions={
+          <>
+            <button onClick={() => void scan("trivy")} disabled={busy} className="btn-primary">
+              Run Trivy
+            </button>
+            <button onClick={() => void scan("lynis")} disabled={busy} className="btn-ghost">
+              Run Lynis
+            </button>
+          </>
+        }
+      />
 
       {error && <p className="text-sm text-amber-400">{error}</p>}
 
       {latest && (
-        <section className="rounded-lg border border-slate-800 bg-slate-900 p-6">
+        <section className="card p-6">
           <p className="text-sm text-slate-400 uppercase">Latest ({latest.tool})</p>
           <div className="mt-2 flex items-baseline gap-4">
             <span className={`text-5xl font-bold ${scoreColor(latest.score)}`}>

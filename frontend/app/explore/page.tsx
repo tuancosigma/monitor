@@ -5,6 +5,7 @@ import { fetchEvents, type EcsEvent, type EventFilters } from "@/lib/api";
 import { useSse } from "@/lib/use-sse";
 import { LogTable } from "@/components/log-table";
 import { NlQueryBox } from "@/components/nl-query-box";
+import { PageHeader } from "@/components/ui/page-header";
 
 export default function ExplorePage() {
   const [filters, setFilters] = useState<EventFilters>({ limit: 100 });
@@ -40,20 +41,20 @@ export default function ExplorePage() {
 
   return (
     <main className="mx-auto flex min-h-screen max-w-6xl flex-col gap-6 p-8">
-      <header className="flex items-center justify-between">
-        <div>
-          <h1 className="text-2xl font-bold">Explore</h1>
-          <p className="text-slate-400">Search and live-tail ingested events</p>
-        </div>
-        <button
-          onClick={() => setLiveTail((v) => !v)}
-          className={`rounded px-4 py-2 text-sm font-medium ${
-            liveTail ? "bg-emerald-600" : "bg-slate-700"
-          }`}
-        >
-          {liveTail ? "● Live" : "Live tail"}
-        </button>
-      </header>
+      <PageHeader
+        title="Explore"
+        description="Search and live-tail ingested events"
+        actions={
+          <button
+            onClick={() => setLiveTail((v) => !v)}
+            className={`rounded px-4 py-2 text-sm font-medium ${
+              liveTail ? "bg-emerald-600" : "bg-slate-700"
+            }`}
+          >
+            {liveTail ? "● Live" : "Live tail"}
+          </button>
+        }
+      />
 
       <section className="grid grid-cols-2 gap-3 md:grid-cols-3 lg:grid-cols-6">
         <input className="filter-input" placeholder="host.name" onChange={update("host_name")} />

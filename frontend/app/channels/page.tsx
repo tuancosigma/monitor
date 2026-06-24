@@ -20,6 +20,7 @@ import {
   type RoutingRule,
   type Silence,
 } from "@/lib/api";
+import { PageHeader } from "@/components/ui/page-header";
 
 type Tab = "channels" | "routing" | "silences";
 
@@ -366,15 +367,11 @@ export default function ChannelsPage() {
   return (
     <main className="mx-auto flex min-h-screen max-w-7xl flex-col gap-6 p-8">
       {/* Header */}
-      <header className="flex flex-col gap-1">
-        <div className="flex items-center gap-2 text-sm text-slate-400">
-          <Link href="/" className="hover:text-slate-200">Home</Link>
-          <span>/</span>
-          <span className="text-slate-200">Alerting Settings</span>
-        </div>
-        <h1 className="text-3xl font-extrabold tracking-tight text-white mt-1">Alerting & Routing Settings</h1>
-        <p className="text-slate-400">Configure notification integrations, severity routing matrices, and active silences.</p>
-      </header>
+      <PageHeader
+        breadcrumb={[{ label: "Home", href: "/" }, { label: "Alerting Settings" }]}
+        title="Alerting & Routing Settings"
+        description="Configure notification integrations, severity routing matrices, and active silences."
+      />
 
       {/* Navigation Tabs */}
       <div className="flex gap-4 border-b border-slate-800 pb-3">
@@ -387,7 +384,7 @@ export default function ChannelsPage() {
         <button
           onClick={() => setActiveTab("channels")}
           className={`text-sm font-semibold pb-3 px-1 outline-none ${
-            activeTab === "channels" ? "border-b-2 border-sky-500 text-sky-400" : "text-slate-400 hover:text-slate-200"
+            activeTab === "channels" ? "border-b-2 border-accent text-accent-soft" : "text-slate-400 hover:text-slate-200"
           }`}
         >
           Notification Channels
@@ -395,7 +392,7 @@ export default function ChannelsPage() {
         <button
           onClick={() => setActiveTab("routing")}
           className={`text-sm font-semibold pb-3 px-1 outline-none ${
-            activeTab === "routing" ? "border-b-2 border-sky-500 text-sky-400" : "text-slate-400 hover:text-slate-200"
+            activeTab === "routing" ? "border-b-2 border-accent text-accent-soft" : "text-slate-400 hover:text-slate-200"
           }`}
         >
           Routing Rules
@@ -403,7 +400,7 @@ export default function ChannelsPage() {
         <button
           onClick={() => setActiveTab("silences")}
           className={`text-sm font-semibold pb-3 px-1 outline-none ${
-            activeTab === "silences" ? "border-b-2 border-sky-500 text-sky-400" : "text-slate-400 hover:text-slate-200"
+            activeTab === "silences" ? "border-b-2 border-accent text-accent-soft" : "text-slate-400 hover:text-slate-200"
           }`}
         >
           Muting Silences
@@ -418,7 +415,7 @@ export default function ChannelsPage() {
 
       {loading ? (
         <div className="flex justify-center items-center py-20">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sky-500" />
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-accent" />
         </div>
       ) : (
         <>
@@ -432,7 +429,7 @@ export default function ChannelsPage() {
                 </div>
                 <button
                   onClick={handleOpenCreateChannel}
-                  className="rounded bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-500 transition"
+                  className="rounded btn-primary transition"
                 >
                   Add Channel
                 </button>
@@ -550,7 +547,7 @@ export default function ChannelsPage() {
                           value={channelForm.name}
                           onChange={(e) => setChannelForm((prev) => ({ ...prev, name: e.target.value }))}
                           placeholder="e.g. SOC Team Slack"
-                          className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
+                          className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm focus:border-accent focus:outline-none"
                         />
                       </div>
 
@@ -560,7 +557,7 @@ export default function ChannelsPage() {
                           value={channelForm.type}
                           disabled={editingChannel !== null}
                           onChange={(e) => setChannelForm((prev) => ({ ...prev, type: e.target.value }))}
-                          className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none disabled:opacity-50"
+                          className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm focus:border-accent focus:outline-none disabled:opacity-50"
                         >
                           <option value="slack">Slack Webhook</option>
                           <option value="discord">Discord Webhook</option>
@@ -588,7 +585,7 @@ export default function ChannelsPage() {
                                 }))
                               }
                               placeholder="e.g. ${SLACK_WEBHOOK_URL} or https://hooks.slack.com/services/..."
-                              className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none font-mono"
+                              className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none font-mono"
                             />
                             <p className="text-2xs text-slate-500 italic mt-0.5">
                               {"Tip: Reference environment secrets like ${SLACK_WEBHOOK_URL}."}
@@ -611,7 +608,7 @@ export default function ChannelsPage() {
                                   }))
                                 }
                                 placeholder="e.g. ${TELEGRAM_BOT_TOKEN} or 123456:ABC-DEF"
-                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none font-mono"
+                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none font-mono"
                               />
                             </div>
                             <div className="flex flex-col gap-1.5">
@@ -627,7 +624,7 @@ export default function ChannelsPage() {
                                   }))
                                 }
                                 placeholder="e.g. -100123456789"
-                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none font-mono"
+                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none font-mono"
                               />
                             </div>
                           </>
@@ -648,7 +645,7 @@ export default function ChannelsPage() {
                                   }))
                                 }
                                 placeholder="smtp.mailgun.org"
-                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none"
+                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none"
                               />
                             </div>
                             <div className="flex flex-col gap-1.5">
@@ -663,7 +660,7 @@ export default function ChannelsPage() {
                                     config: { ...prev.config, port: Number(e.target.value) },
                                   }))
                                 }
-                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none"
+                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none"
                               />
                             </div>
                             <div className="flex flex-col gap-1.5">
@@ -676,7 +673,7 @@ export default function ChannelsPage() {
                                     config: { ...prev.config, use_starttls: e.target.value === "true" },
                                   }))
                                 }
-                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none"
+                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none"
                               >
                                 <option value="true">True (Port 587)</option>
                                 <option value="false">False</option>
@@ -693,7 +690,7 @@ export default function ChannelsPage() {
                                     config: { ...prev.config, username: e.target.value },
                                   }))
                                 }
-                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none"
+                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none"
                               />
                             </div>
                             <div className="flex flex-col gap-1.5">
@@ -708,7 +705,7 @@ export default function ChannelsPage() {
                                   }))
                                 }
                                 placeholder="••••••••"
-                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none"
+                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none"
                               />
                             </div>
                             <div className="flex flex-col gap-1.5">
@@ -724,7 +721,7 @@ export default function ChannelsPage() {
                                   }))
                                 }
                                 placeholder="soc@example.com"
-                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none"
+                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none"
                               />
                             </div>
                             <div className="flex flex-col gap-1.5">
@@ -739,7 +736,7 @@ export default function ChannelsPage() {
                                     config: { ...prev.config, from_email: e.target.value },
                                   }))
                                 }
-                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none"
+                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none"
                               />
                             </div>
                           </div>
@@ -760,7 +757,7 @@ export default function ChannelsPage() {
                                   }))
                                 }
                                 placeholder="https://api.internal.com/notify"
-                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none font-mono"
+                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none font-mono"
                               />
                             </div>
                             <div className="flex flex-col gap-1.5">
@@ -773,7 +770,7 @@ export default function ChannelsPage() {
                                     config: { ...prev.config, method: e.target.value },
                                   }))
                                 }
-                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none"
+                                className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none"
                               >
                                 <option value="POST">POST</option>
                                 <option value="PUT">PUT</option>
@@ -806,7 +803,7 @@ export default function ChannelsPage() {
                         </button>
                         <button
                           type="submit"
-                          className="rounded bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-500 transition"
+                          className="rounded btn-primary transition"
                         >
                           Save Channel
                         </button>
@@ -829,7 +826,7 @@ export default function ChannelsPage() {
                 <button
                   onClick={handleOpenCreateRule}
                   disabled={channels.length === 0}
-                  className="rounded bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-500 disabled:opacity-50 transition"
+                  className="rounded btn-primary disabled:opacity-50 transition"
                 >
                   Create Rule
                 </button>
@@ -977,7 +974,7 @@ export default function ChannelsPage() {
                           value={ruleForm.name}
                           onChange={(e) => setRuleForm((prev) => ({ ...prev, name: e.target.value }))}
                           placeholder="e.g. Route Criticals to Slack"
-                          className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
+                          className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm focus:border-accent focus:outline-none"
                         />
                       </div>
 
@@ -986,7 +983,7 @@ export default function ChannelsPage() {
                         <select
                           value={ruleForm.channel_id}
                           onChange={(e) => setRuleForm((prev) => ({ ...prev, channel_id: Number(e.target.value) }))}
-                          className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
+                          className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm focus:border-accent focus:outline-none"
                         >
                           {channels.map((c) => (
                             <option key={c.id} value={c.id}>
@@ -1041,7 +1038,7 @@ export default function ChannelsPage() {
                               }));
                             }}
                             placeholder="e.g. 5a8a478b-302a-4db5-b82b-8a8b13c7dbba"
-                            className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none font-mono"
+                            className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none font-mono"
                           />
                         </div>
 
@@ -1058,7 +1055,7 @@ export default function ChannelsPage() {
                               }));
                             }}
                             placeholder="e.g. T1110, T1078"
-                            className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none font-mono"
+                            className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none font-mono"
                           />
                         </div>
                       </fieldset>
@@ -1070,7 +1067,7 @@ export default function ChannelsPage() {
                           value={ruleForm.escalation_delay_min}
                           onChange={(e) => setRuleForm((prev) => ({ ...prev, escalation_delay_min: e.target.value }))}
                           placeholder="e.g. 15 (leave blank for immediate send)"
-                          className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
+                          className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm focus:border-accent focus:outline-none"
                         />
                         <p className="text-2xs text-slate-500 italic mt-0.5">If set, escalates unacknowledged open alerts matching this rule after N minutes.</p>
                       </div>
@@ -1098,7 +1095,7 @@ export default function ChannelsPage() {
                         </button>
                         <button
                           type="submit"
-                          className="rounded bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-500 transition"
+                          className="rounded btn-primary transition"
                         >
                           Save Rule
                         </button>
@@ -1120,7 +1117,7 @@ export default function ChannelsPage() {
                 </div>
                 <button
                   onClick={handleOpenCreateSilence}
-                  className="rounded bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-500 transition"
+                  className="rounded btn-primary transition"
                 >
                   Add Silence
                 </button>
@@ -1249,7 +1246,7 @@ export default function ChannelsPage() {
                           value={silenceForm.name}
                           onChange={(e) => setSilenceForm((prev) => ({ ...prev, name: e.target.value }))}
                           placeholder="e.g. Mute Low alerts during scheduled maintenance"
-                          className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none"
+                          className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm focus:border-accent focus:outline-none"
                         />
                       </div>
 
@@ -1267,7 +1264,7 @@ export default function ChannelsPage() {
                                 filters: { ...prev.filters, severity: e.target.value },
                               }))
                             }
-                            className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none"
+                            className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none"
                           >
                             <option value="">Any Severity</option>
                             <option value="critical">Critical</option>
@@ -1290,7 +1287,7 @@ export default function ChannelsPage() {
                               }))
                             }
                             placeholder="e.g. 5a8a478b-302a-4db5-b82b-8a8b13c7dbba"
-                            className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none font-mono"
+                            className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none font-mono"
                           />
                         </div>
 
@@ -1306,7 +1303,7 @@ export default function ChannelsPage() {
                               }))
                             }
                             placeholder="e.g. 192.168.1.50"
-                            className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-sky-500 focus:outline-none font-mono"
+                            className="rounded border border-slate-750 bg-slate-950 px-3 py-1.5 text-sm focus:border-accent focus:outline-none font-mono"
                           />
                         </div>
                       </fieldset>
@@ -1320,7 +1317,7 @@ export default function ChannelsPage() {
                             required
                             value={silenceForm.start_time}
                             onChange={(e) => setSilenceForm((prev) => ({ ...prev, start_time: e.target.value }))}
-                            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none text-white font-mono"
+                            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm focus:border-accent focus:outline-none text-white font-mono"
                           />
                         </div>
                         <div className="flex flex-col gap-1.5">
@@ -1330,7 +1327,7 @@ export default function ChannelsPage() {
                             required
                             value={silenceForm.end_time}
                             onChange={(e) => setSilenceForm((prev) => ({ ...prev, end_time: e.target.value }))}
-                            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm focus:border-sky-500 focus:outline-none text-white font-mono"
+                            className="rounded border border-slate-700 bg-slate-950 px-3 py-2 text-sm focus:border-accent focus:outline-none text-white font-mono"
                           />
                         </div>
                       </div>
@@ -1358,7 +1355,7 @@ export default function ChannelsPage() {
                         </button>
                         <button
                           type="submit"
-                          className="rounded bg-sky-600 px-4 py-2 text-sm font-semibold text-white hover:bg-sky-500 transition"
+                          className="rounded btn-primary transition"
                         >
                           Save Silence
                         </button>
